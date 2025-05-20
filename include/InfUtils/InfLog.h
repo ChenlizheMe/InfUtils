@@ -97,25 +97,20 @@ class InfLog
 };
 } // namespace infutils
 
-#define INFLOG_DEBUG(...)                                                      \
-    infutils::InfLog::GetInstance().Log(infutils::LOG_DEBUG, __FILE__,         \
-                                        __LINE__, __VA_ARGS__)
+#define INFLOG_INTERNAL(level, ...)                                    \
+    do {                                                               \
+        if ((level) >= infutils::InfLog::GetInstance().GetLogLevel())  \
+            infutils::InfLog::GetInstance().Log(                       \
+                static_cast<infutils::LogLevel>(level),                \
+                __FILE__, __LINE__, __VA_ARGS__);                      \
+    } while (false)
 
-#define INFLOG_INFO(...)                                                       \
-    infutils::InfLog::GetInstance().Log(infutils::LOG_INFO, __FILE__,          \
-                                        __LINE__, __VA_ARGS__)
-
-#define INFLOG_WARN(...)                                                       \
-    infutils::InfLog::GetInstance().Log(infutils::LOG_WARN, __FILE__,          \
-                                        __LINE__, __VA_ARGS__)
-
-#define INFLOG_ERROR(...)                                                      \
-    infutils::InfLog::GetInstance().Log(infutils::LOG_ERROR, __FILE__,         \
-                                        __LINE__, __VA_ARGS__)
-
-#define INFLOG_FATAL(...)                                                      \
-    infutils::InfLog::GetInstance().Log(infutils::LOG_FATAL, __FILE__,         \
-                                        __LINE__, __VA_ARGS__)
+#define INFLOG_DEBUG(...)  INFLOG_INTERNAL(infutils::LOG_DEBUG,  __VA_ARGS__)
+#define INFLOG_INFO(...)   INFLOG_INTERNAL(infutils::LOG_INFO,   __VA_ARGS__)
+#define INFLOG_WARN(...)   INFLOG_INTERNAL(infutils::LOG_WARN,   __VA_ARGS__)
+#define INFLOG_ERROR(...)  INFLOG_INTERNAL(infutils::LOG_ERROR,  __VA_ARGS__)
+#define INFLOG_FATAL(...)                                              \
+    do { INFLOG_INTERNAL(infutils::LOG_FATAL, __VA_ARGS__); std::abort(); } while(false)
 
 #define INFLOG_SET_LEVEL(level)                                                \
     infutils::InfLog::GetInstance().SetLogLevel(level)
