@@ -1,3 +1,5 @@
+#pragma once
+
 #include <filesystem>
 #include <stdexcept>
 
@@ -5,7 +7,7 @@
 #include <windows.h>
 
 namespace infutils {
-    const char* GetExecutableDir() {
+    inline const char* GetExecutableDir() {
     static std::string path;
     char buffer[MAX_PATH];
     DWORD len = GetModuleFileNameA(NULL, buffer, MAX_PATH);
@@ -25,7 +27,7 @@ namespace infutils {
 #endif
 
 namespace infutils{
-    const char* GetExecutableDir() {
+    inline const char* GetExecutableDir() {
     static std::string path;
     char result[PATH_MAX];
 
@@ -46,7 +48,7 @@ namespace infutils{
 }
 #endif
 namespace infutils{
-    const char* JoinPath(std::initializer_list<const char*> parts) {
+    inline const char* JoinPath(std::initializer_list<const char*> parts) {
     static std::string result;
     std::filesystem::path path;
 
