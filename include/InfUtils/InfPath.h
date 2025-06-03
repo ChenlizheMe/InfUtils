@@ -55,8 +55,8 @@ namespace infutils{
     for (const auto& part : parts) {
         path /= part;
     }
-
     result = path.string();
+    std::replace(result.begin(), result.end(), '\\', '/');
     return result.c_str();
 }
 }
