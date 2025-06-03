@@ -22,21 +22,21 @@ namespace infutils
 class InfExtLoad
 {
   public:
-    bool LoadDLL(const std::string &dllName)
+    bool LoadDLL(const std::string &dllPath, const std::string &dllName)
     {
-#ifdef _WIN32
-        std::string file = dllName + ".dll";
-        HMODULE hLib = LoadLibraryA(file.c_str());
+#if defined(__unix__) || defined(__unix) || defined(__APPLE__) || defined(__MACH__)
+        INFLOG_DEBUG("Loading DLL in linux: ", dllPath.c_str());
+        void *hLib = dlopen(dllPath.c_str(), RTLD_NOW | RTLD_GLOBAL);
 #else
-        std::string file = "lib" + dllName + ".so"; // Linux/Unix 常见前缀
-        void *hLib = dlopen(file.c_str(), RTLD_NOW | RTLD_GLOBAL);
+        INFLOG_DEBUG("Loading DLL in windows: ", dllPath.c_str());
+        HMODULE hLib = LoadLibraryA(dllPath.c_str());
 #endif
         if (!hLib) {
-            INFLOG_ERROR("Failed to load ", file.c_str());
+            INFLOG_ERROR("Failed to load ", dllName.c_str());
             return false;
         }
         m_dlls[dllName] = hLib;
-        INFLOG_DEBUG("Succeed to load ", file.c_str());
+        INFLOG_DEBUG("Succeed to load ", dllName.c_str());
         return true;
     }
 
