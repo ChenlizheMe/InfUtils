@@ -42,9 +42,6 @@ class InfLog
 
     void SetLogLevel(int level)
     {
-        std::cout << "Log level set to: "
-                  << LogLevelToString(static_cast<LogLevel>(level))
-                  << std::endl;
         logLevel = level;
     }
 

@@ -49,14 +49,26 @@ namespace infutils{
 #endif
 namespace infutils{
     inline const char* JoinPath(std::initializer_list<const char*> parts) {
-    static std::string result;
-    std::filesystem::path path;
+        static std::string result;
+        std::filesystem::path path;
 
-    for (const auto& part : parts) {
-        path /= part;
+        for (const auto& part : parts) {
+            path /= part;
+        }
+        result = path.string();
+        std::replace(result.begin(), result.end(), '\\', '/');
+        return result.c_str();
     }
-    result = path.string();
-    std::replace(result.begin(), result.end(), '\\', '/');
-    return result.c_str();
-}
+
+    inline const char* JoinPath(std::initializer_list<std::string> parts) {
+        static std::string result;
+        std::filesystem::path path;
+
+        for (const auto& part : parts) {
+            path /= part;
+        }
+        result = path.string();
+        std::replace(result.begin(), result.end(), '\\', '/');
+        return result.c_str();
+    }
 }
