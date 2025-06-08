@@ -54,7 +54,7 @@ class InfExtLoad
     {
         auto it = m_dlls.find(dllName);
         if (it == m_dlls.end())
-            INFLOG_FATAL("DLL \"%s\" not loaded", dllName.c_str());
+            INFLOG_FATAL("DLL", dllName.c_str(), " not loaded.");
 
         auto sym = reinterpret_cast<T>(dlsym(it->second, funcName.c_str()));
         if (!sym)
