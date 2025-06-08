@@ -1,5 +1,7 @@
 #pragma once
 
+#include <InfUtils/InfPath.h>
+
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -22,27 +24,30 @@ namespace infutils
 class InfExtLoad
 {
   public:
-    bool LoadDLL(const std::string &dllPath, const std::string &dllName)
+    void LoadDLL(const std::string& dllName, const std::string& dllDir)
     {
-#if defined(__unix__) || defined(__unix) || defined(__APPLE__) || defined(__MACH__)
-        INFLOG_DEBUG("Loading DLL in linux: ", dllPath.c_str());
-        void *hLib = dlopen(dllPath.c_str(), RTLD_NOW | RTLD_GLOBAL);
-#else
-        INFLOG_DEBUG("Loading DLL in windows: ", dllPath.c_str());
-        HMODULE hLib = LoadLibraryA(dllPath.c_str());
-#endif
+    #if defined(__unix__) || defined(__unix) || defined(__APPLE__) || defined(__MACH__)
+        std::string fullPath = infutils::JoinPath({dllDir, "lib" + dllName + ".so"});
+        INFLOG_DEBUG("Loading DLL in linux: ", fullPath.c_str());
+        void* hLib = dlopen(fullPath.c_str(), RTLD_NOW | RTLD_GLOBAL);
+    #else
+        std::string fullPath = infutils::JoinPath({dllDir, dllName + ".dll"});
+        INFLOG_DEBUG("Loading DLL in windows: ", fullPath.c_str());
+        HMODULE hLib = LoadLibraryA(fullPath.c_str());
+    #endif
+
         if (!hLib) {
-            #if defined(__unix__) || defined(__unix) || defined(__APPLE__) || defined(__MACH__)
-            INFLOG_FATAL("Cannot to load DLL: ", dllName.c_str(), " Error: ", dlerror());
-            #else
+    #if defined(__unix__) || defined(__unix) || defined(__APPLE__) || defined(__MACH__)
+            INFLOG_FATAL("Failed to load ", dllName.c_str(), ". Error: ", dlerror());
+    #else
             INFLOG_ERROR("Failed to load ", dllName.c_str(), ". Reason: ", GetLastErrorAsString().c_str());
-            #endif
-            return false;
+    #endif
+            return;
         }
+
         m_dlls[dllName] = hLib;
-        INFLOG_DEBUG("Succeed to load ", dllName.c_str());
-        return true;
     }
+
 
     template <typename T>
     T LoadFunc(const std::string &dllName, const std::string &funcName)
