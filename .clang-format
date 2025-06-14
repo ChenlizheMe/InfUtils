@@ -1,4 +1,3 @@
-# .clang-format
 BasedOnStyle: LLVM
 IndentWidth: 4
 BreakBeforeBraces: Custom
@@ -7,7 +6,10 @@ BraceWrapping:
   AfterStruct:     true
   AfterEnum:       true
   AfterNamespace:  true
-  AfterFunction:   true 
+  AfterFunction:   true
   BeforeCatch:     false
   BeforeElse:      false
-  IndentBraces:    false  
+  IndentBraces:    false
+
+AllowShortFunctionsOnASingleLine: None
+ColumnLimit: 160
